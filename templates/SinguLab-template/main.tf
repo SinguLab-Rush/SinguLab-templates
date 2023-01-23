@@ -38,7 +38,7 @@ variable "dotfiles_uri" {
 resource "coder_agent" "main" {
   arch           = data.coder_provisioner.me.arch
   os             = "linux"
-  startup_script = var.dotfiles_uri != "" ? "yadm clone --recurse-submodules -f ${var.dotfiles_uri}" : null
+  startup_script = var.dotfiles_uri != "" ? "yadm clone --recurse-submodules -f ${var.dotfiles_uri} && sh ~/install.sh" : null
 }
 
 resource "docker_volume" "home_volume" {
