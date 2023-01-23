@@ -1,9 +1,4 @@
-# Note: this example demonstrates the use of
-# dotfiles with Coder templates.
-
-# The Docker aspect of the template only works
-# with macOS/Linux amd64 systems. See the full
-# Docker example for details
+# SinguLab terraform template for coder/coder
 
 terraform {
   required_providers {
@@ -43,11 +38,11 @@ variable "dotfiles_uri" {
 resource "coder_agent" "main" {
   arch           = data.coder_provisioner.me.arch
   os             = "linux"
-  startup_script = var.dotfiles_uri != "" ? "coder dotfiles -y ${var.dotfiles_uri}" : null
+  startup_script = var.dotfiles_uri != "" ? "yadm clone --recurse-submodules -f ${var.dotfiles_uri}" : null
 }
 
 resource "docker_volume" "home_volume" {
-  name = "coder-${data.coder_workspace.me.id}-datascience"
+  name = "coder-${data.coder_workspace.me.name}-${data.coder_workspace.me.owner}-SinguLab"
   # Protect the volume from being deleted due to changes in attributes.
   lifecycle {
     ignore_changes = all
