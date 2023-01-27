@@ -1,8 +1,7 @@
 # SinguLab Template
 
-During workspace creation, Coder prompts you to specify a dotfiles URL via a Terraform variable. Once the 
+During workspace creation, Coder prompts you to specify a dotfiles URL via a Terraform variable. Once the
 workspace starts, the Coder agent runs `yadm clone --recurse-submodules` via the startup script:
-
 
 ````HCF
 variable "dotfiles_uri" {
@@ -10,7 +9,7 @@ variable "dotfiles_uri" {
   Dotfiles repo URI (optional)
   see https://dotfiles.github.io
   EOF
-  default     = "https://github.com/pranavmishra90/dotfiles"
+  default     = ""
 }
 
 resource "coder_agent" "main" {
@@ -29,3 +28,8 @@ variable "docker_image" {
 }
 ````
 
+## Development
+
+1. Make changes to the `main.tf` file as needed.
+1. Login to coder cli with `coder login <url>`
+1. Push changes to the template with `coder templates push SinguLab`

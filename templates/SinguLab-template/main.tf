@@ -35,12 +35,33 @@ variable "dotfiles_uri" {
   default     = ""
 }
 
+resource "coder_agent" "dotfiles" {
+  arch           = data.coder_provisioner.me.arch
+  os             = "linux"
+  # yadm is already installed on the singulab repository
+  startup_script = var.dotfiles_uri != "" ? "yadm clone --recurse-submodules -f ${var.dotfiles_uri} && sh ~/install.sh" : null
+}
 resource "coder_agent" "main" {
   arch           = data.coder_provisioner.me.arch
   os             = "linux"
-  startup_script = var.dotfiles_uri != "" ? "yadm clone --recurse-submodules -f ${var.dotfiles_uri} && sh ~/install.sh" : null
+  startup_script = "code-server --auth none"
 }
 
+resource "coder_app" "code-server" {
+  agent_id     = coder_agent.main.id
+  slug         = "code-server"
+  display_name = "VSCode in Browser"
+  url          = "http://localhost:8080/?folder=/home/coder/work"
+  icon         = "/icon/code.svg"
+  subdomain    = false
+  share        = "owner"
+
+  healthcheck {
+    url       = "http://localhost:8080/healthz"
+    interval  = 3
+    threshold = 10
+  }
+}
 resource "docker_volume" "home_volume" {
   name = "coder-${data.coder_workspace.me.name}-${data.coder_workspace.me.owner}-SinguLab"
   # Protect the volume from being deleted due to changes in attributes.
